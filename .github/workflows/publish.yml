@@ -1,0 +1,27 @@
+name: Publish to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Configure Git Credentials
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+      - uses: uses/setup-python@v5
+        with:
+          python-version: 3.x
+      - name: Install dependencies
+        run: |
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; else pip install mkdocs-material mkdocs-awesome-pages-plugin; fi
+      - name: Deploy site
+        run: mkdocs gh-deploy --force
